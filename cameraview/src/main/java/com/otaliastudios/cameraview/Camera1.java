@@ -31,6 +31,8 @@ class Camera1 extends CameraController {
     private MediaRecorder mMediaRecorder;
     private File mVideoFile;
 
+    private Size prefCaptureSize;
+
     private int mSensorOffset;
 
     private final int mPostFocusResetDelay = 3000;
@@ -577,7 +579,12 @@ class Camera1 extends CameraController {
         if (mSessionType == SessionType.PICTURE) {
             // Choose the max size.
             List<Size> captureSizes = sizesFromList(params.getSupportedPictureSizes());
-            Size maxSize = Collections.max(captureSizes);
+            Size maxSize;
+            if (prefCaptureSize != null) {
+                maxSize = prefCaptureSize;
+            } else {
+                maxSize = Collections.max(captureSizes);
+            }
             LOG.i("size:", "computeCaptureSize:", "computed", maxSize);
             return Collections.max(captureSizes);
         } else {
@@ -909,5 +916,13 @@ class Camera1 extends CameraController {
         return result;
     }
 
+    @Override
+    List<Size> getAvailableCaptureSizes() {
+        return sizesFromList(mCamera.getParameters().getSupportedPictureSizes());
+    }
 
+    @Override
+    void setPreferredCaptureSize(Size prefSize) {
+        prefCaptureSize = prefSize;
+    }
 }

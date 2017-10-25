@@ -125,4 +125,14 @@ class Camera2 extends CameraController {
     boolean startAutoFocus(@Nullable Gesture gesture, PointF point) {
         return false;
     }
+
+    @Override
+    List<Size> getAvailableCaptureSizes() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    void setPreferredCaptureSize(Size prefSize) {
+
+    }
 }

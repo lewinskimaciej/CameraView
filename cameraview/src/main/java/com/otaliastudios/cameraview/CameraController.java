@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.WorkerThread;
 
 import java.io.File;
+import java.util.List;
 
 abstract class CameraController implements CameraPreview.SurfaceCallback {
 
@@ -320,6 +321,10 @@ abstract class CameraController implements CameraPreview.SurfaceCallback {
     final Size getPreviewSize() {
         return mPreviewSize;
     }
+
+    abstract List<Size> getAvailableCaptureSizes();
+
+    abstract void setPreferredCaptureSize(Size prefSize);
 
     //endregion
 }

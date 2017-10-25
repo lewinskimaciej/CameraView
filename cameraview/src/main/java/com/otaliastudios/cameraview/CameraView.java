@@ -1624,4 +1624,12 @@ public class CameraView extends FrameLayout {
     }
 
     //endregion
+
+    public void setPreferredCaptureSize(Size prefSize) {
+        mCameraController.setPreferredCaptureSize(prefSize);
+    }
+
+    public List<Size> getAvailableCaptureSizes() {
+        return mCameraController.getAvailableCaptureSizes();
+    }
 }
