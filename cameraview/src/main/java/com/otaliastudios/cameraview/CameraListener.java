@@ -33,7 +33,7 @@ public abstract class CameraListener {
      * Notifies that a picture previously captured with {@link CameraView#capturePicture()}
      * or {@link CameraView#captureSnapshot()} is ready to be shown or saved.
      *
-     * If planning to get a bitmap, you can use {@link CameraUtils#decodeBitmap(byte[], CameraUtils.BitmapCallback)}
+     * If planning to get a bitmap, you can use {@link CameraUtils#decodeBitmap(byte[], Float, CameraUtils.BitmapCallback)}
      * to decode the byte array taking care about orientation.
      *
      * @param jpeg captured picture
