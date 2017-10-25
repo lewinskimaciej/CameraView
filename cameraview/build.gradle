@@ -36,6 +36,7 @@ android {
         main.java.srcDirs += 'src/main/views'
         main.java.srcDirs += 'src/main/utils'
     }
+    buildToolsVersion '26.0.2'
 }
 
 dependencies {
@@ -60,9 +61,9 @@ install {
     repositories.mavenInstaller {
         pom.project {
             name 'CameraView'
-            description 'A well documented, high-level Android interface that makes capturing pictures ' +
+            description 'A fork of well documented, high-level Android interface that makes capturing pictures ' +
                     'and videos easy, addressing most of the common issues and needs.'
-            url 'https://github.com/natario1/CameraView'
+            url 'https://github.com/lewinskimaciej/CameraView'
 
             packaging 'aar'
             groupId project.group
@@ -76,33 +77,25 @@ install {
                 }
             }
             scm {
-                connection 'https://github.com/natario1/CameraView.git'
-                developerConnection 'https://github.com/natario1/CameraView.git'
-                url 'https://github.com/natario1/CameraView'
+                connection 'https://github.com/lewinskimaciej/CameraView.git'
+                developerConnection 'https://github.com/lewinskimaciej/CameraView.git'
+                url 'https://github.com/lewinskimaciej/CameraView'
 
             }
             developers {
                 developer {
-                    id = 'natario'
-                    name 'Natario'
+                    id = 'lewinskimaciej'
+                    name 'Lewinskimaciej'
                 }
             }
         }
     }
 }
 
-def bintrayUser
-def bintrayKey
-def travis = System.getenv("TRAVIS")
-if (travis) {
-    bintrayUser = System.getenv("BINTRAY_USER")
-    bintrayKey = System.getenv("BINTRAY_KEY")
-} else {
-    Properties props = new Properties()
-    props.load(project.rootProject.file('local.properties').newDataInputStream())
-    bintrayUser = props.getProperty('bintray.user')
-    bintrayKey = props.get('bintray.key')
-}
+Properties props = new Properties()
+props.load(project.rootProject.file('local.properties').newDataInputStream())
+def bintrayUser = props.getProperty('bintray.user')
+def bintrayKey = props.get('bintray.key')
 
 bintray {
     // https://github.com/bintray/gradle-bintray-plugin
@@ -113,14 +106,14 @@ bintray {
         repo = 'android'
         name = 'CameraView'
         licenses = ['Apache-2.0']
-        vcsUrl = 'https://github.com/natario1/CameraView.git'
+        vcsUrl = 'https://github.com/lewinskimaciej/CameraView.git'
         publish = true
         override = true
         version {
             name = project.version
-            desc = 'CameraView v. '+project.version
+            desc = 'CameraView v. ' + project.version
             released = new Date()
-            vcsTag = 'v'+project.version
+            vcsTag = 'v' + project.version
         }
     }
 }
