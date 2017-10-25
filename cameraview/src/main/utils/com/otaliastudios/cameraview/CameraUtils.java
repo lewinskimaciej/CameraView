@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.hardware.Camera;
 import android.os.Handler;
+import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.media.ExifInterface;
 
@@ -40,7 +41,7 @@ public class CameraUtils {
      * Facing value, so that a session can be started.
      *
      * @param context a valid context
-     * @param facing either {@link Facing#BACK} or {@link Facing#FRONT}
+     * @param facing  either {@link Facing#BACK} or {@link Facing#FRONT}
      * @return true if such sensor exists
      */
     public static boolean hasCameraFacing(Context context, Facing facing) {
@@ -59,19 +60,22 @@ public class CameraUtils {
      * The difference with {@link android.graphics.BitmapFactory#decodeByteArray(byte[], int, int)}
      * is that this cares about orientation, reading it from the EXIF header.
      * This is executed in a background thread, and returns the result to the original thread.
-     *
+     * <p>
      * This ignores flipping at the moment.
      * TODO care about flipping using Matrix.scale()
      *
-     * @param source a JPEG byte array
+     * @param source   a JPEG byte array
      * @param callback a callback to be notified
      */
-    public static void decodeBitmap(final byte[] source, final BitmapCallback callback) {
+    public static void decodeBitmap(final byte[] source, @Nullable final Float scale, final BitmapCallback callback) {
+        if (scale != null && (scale < 0 || scale > 1.0f)) {
+            throw new IllegalArgumentException("Scale needs to be between 0.0 and 1.0");
+        }
         final Handler ui = new Handler();
         WorkerHandler.run(new Runnable() {
             @Override
             public void run() {
-                final Bitmap bitmap = decodeBitmap(source);
+                final Bitmap bitmap = decodeBitmap(source, scale);
                 ui.post(new Runnable() {
                     @Override
                     public void run() {
@@ -83,7 +87,7 @@ public class CameraUtils {
     }
 
 
-    static Bitmap decodeBitmap(byte[] source) {
+    static Bitmap decodeBitmap(byte[] source, @Nullable final Float scale) {
         int orientation;
         boolean flip;
         InputStream stream = null;
@@ -95,21 +99,26 @@ public class CameraUtils {
             switch (exifOrientation) {
                 case ExifInterface.ORIENTATION_NORMAL:
                 case ExifInterface.ORIENTATION_FLIP_HORIZONTAL:
-                    orientation = 0; break;
+                    orientation = 0;
+                    break;
 
                 case ExifInterface.ORIENTATION_ROTATE_180:
                 case ExifInterface.ORIENTATION_FLIP_VERTICAL:
-                    orientation = 180; break;
+                    orientation = 180;
+                    break;
 
                 case ExifInterface.ORIENTATION_ROTATE_90:
                 case ExifInterface.ORIENTATION_TRANSPOSE:
-                    orientation = 90; break;
+                    orientation = 90;
+                    break;
 
                 case ExifInterface.ORIENTATION_ROTATE_270:
                 case ExifInterface.ORIENTATION_TRANSVERSE:
-                    orientation = 270; break;
+                    orientation = 270;
+                    break;
 
-                default: orientation = 0;
+                default:
+                    orientation = 0;
             }
 
             flip = exifOrientation == ExifInterface.ORIENTATION_FLIP_HORIZONTAL ||
@@ -123,25 +132,30 @@ public class CameraUtils {
             flip = false;
         } finally {
             if (stream != null) {
-                try { stream.close(); } catch (Exception e) {}
+                try {
+                    stream.close();
+                } catch (Exception e) {
+                    // ignore
+                }
             }
         }
 
-
         Bitmap bitmap = BitmapFactory.decodeByteArray(source, 0, source.length);
-        if (orientation != 0 || flip) {
-            Matrix matrix = new Matrix();
-            matrix.setRotate(orientation);
-            // matrix.postScale(1, -1) Flip... needs testing.
-            Bitmap temp = bitmap;
-            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-            temp.recycle();
+        Matrix matrix = new Matrix();
+
+        if (scale != null) {
+            matrix.setScale(scale, scale);
         }
-        return bitmap;
+        if (orientation != 0 || flip) {
+            matrix.postRotate(orientation);
+        }
+
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
 
     public interface BitmapCallback {
-        @UiThread void onBitmapReady(Bitmap bitmap);
+        @UiThread
+        void onBitmapReady(Bitmap bitmap);
     }
 }
