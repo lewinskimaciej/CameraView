@@ -103,7 +103,7 @@ bintray {
     key = bintrayKey
     configurations = ['archives']
     pkg {
-        repo = 'android'
+        repo = 'CameraView'
         name = 'CameraView'
         licenses = ['Apache-2.0']
         vcsUrl = 'https://github.com/lewinskimaciej/CameraView.git'
