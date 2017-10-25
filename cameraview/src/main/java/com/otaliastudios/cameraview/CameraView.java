@@ -1310,6 +1310,7 @@ public class CameraView extends FrameLayout {
         void dispatchOnFocusEnd(@Nullable Gesture trigger, boolean success, PointF where);
         void dispatchOnZoomChanged(final float newValue, final PointF[] fingers);
         void dispatchOnExposureCorrectionChanged(float newValue, float[] bounds, PointF[] fingers);
+        void dispatchBeforeSetup();
     }
 
     private class Callbacks implements CameraCallbacks {
@@ -1322,6 +1323,19 @@ public class CameraView extends FrameLayout {
         private Integer mDeviceOrientation;
 
         Callbacks() {}
+
+        @Override
+        public void dispatchBeforeSetup() {
+            mLogger.i("dispatchBeforeSetup");
+            mUiHandler.post(new Runnable() {
+                @Override
+                public void run() {
+                    for (CameraListener listener : mListeners) {
+                        listener.beforeSetup();
+                    }
+                }
+            });
+        }
 
         @Override
         public void dispatchOnCameraOpened(final CameraOptions options) {

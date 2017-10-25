@@ -40,7 +40,7 @@ public class PicturePreviewActivity extends Activity {
             return;
         }
 
-        CameraUtils.decodeBitmap(b, new CameraUtils.BitmapCallback() {
+        CameraUtils.decodeBitmap(b, null, new CameraUtils.BitmapCallback() {
             @Override
             public void onBitmapReady(Bitmap bitmap) {
                 imageView.setImageBitmap(bitmap);

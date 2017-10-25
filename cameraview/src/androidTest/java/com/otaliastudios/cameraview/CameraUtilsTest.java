@@ -59,7 +59,7 @@ public class CameraUtilsTest extends BaseTest {
         ui(new Runnable() {
             @Override
             public void run() {
-                CameraUtils.decodeBitmap(os.toByteArray(), callback);
+                CameraUtils.decodeBitmap(os.toByteArray(), null, callback);
             }
         });
         Bitmap other = decode.await(800);

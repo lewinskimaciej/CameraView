@@ -7,6 +7,14 @@ import java.io.File;
 
 public abstract class CameraListener {
 
+    /**
+     * Called after camera is opened, but before setup
+     */
+    @UiThread
+    public void beforeSetup() {
+
+    }
+
 
     /**
      * Notifies that the camera was opened.

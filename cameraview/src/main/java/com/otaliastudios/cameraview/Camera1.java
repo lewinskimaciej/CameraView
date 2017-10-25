@@ -182,6 +182,9 @@ class Camera1 extends CameraController {
 
             // Try starting preview.
             mCamera.setDisplayOrientation(computeSensorToDisplayOffset()); // <- not allowed during preview
+
+            mCameraCallbacks.dispatchBeforeSetup();
+
             if (shouldSetup()) setup();
             LOG.i("onStart:", "Ended");
         }
