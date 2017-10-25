@@ -4,7 +4,7 @@ apply plugin: 'com.jfrog.bintray'
 
 // Required by bintray
 version = '1.2.4'
-group = 'com.otaliastudios'
+group = 'com.github.lewinskimaciej'
 
 //region android dependencies
 
