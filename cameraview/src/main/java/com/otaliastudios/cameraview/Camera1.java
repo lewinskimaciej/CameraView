@@ -586,7 +586,7 @@ class Camera1 extends CameraController {
                 maxSize = Collections.max(captureSizes);
             }
             LOG.i("size:", "computeCaptureSize:", "computed", maxSize);
-            return Collections.max(captureSizes);
+            return maxSize;
         } else {
             // Choose according to developer choice in setVideoQuality.
             // The Camcorder internally checks for cameraParameters.getSupportedVideoSizes() etc.
